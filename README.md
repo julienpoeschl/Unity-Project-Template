@@ -1,8 +1,8 @@
 # Installation
 
-This template is ment to be customized, but contains my personal preferences.
+This template is ment to be customized and used as a foundation to create your own personal unity project setup, but contains my personal preferences.
 
-1. To create your own unity project template with this one as the foundation, first press the green "Use this template" button and create a new repository.
+1. To use this unity project template, first press the green "Use this template" button and create a new repository.
 
    <img width="129" height="40" alt="image" src="https://github.com/user-attachments/assets/4d305fda-624e-4cf0-a305-0af6187715e7" />
    
