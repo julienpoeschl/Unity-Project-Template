@@ -1,2 +1,5 @@
-# Unity-Project-Template
-A template for unity 3d projects.
+# Installation
+
+This template is ment to be customized, but contains my personal preferences.
+
+To customize this template, first clone the repository
