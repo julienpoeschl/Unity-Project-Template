@@ -1,4 +1,3 @@
-// Custom inspector for ProjectDirectory based on the drawn UI layout
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
