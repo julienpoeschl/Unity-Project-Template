@@ -1,104 +1,93 @@
 using System;
 using System.IO;
 using UnityEditor;
+using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
-public static class Setup
+namespace Tools
 {
-    private static bool settings = false;
-    private static bool directories = false;
-
-    private static string monoBehaviourScriptTemplate = string.Empty;
-
-    [MenuItem("Tools/Setup/Create Project Setup")]
-    public static void CreateProjectSetup()
+    public static class Setup
     {
-        Debug.Log("Set Editor Settings");
 
-        Debug.Log("Create Directories");
-        string projectDirectoryPath = Path.Combine("Assets", "Tools", "Setup", "ProjectDirectory.asset");
-        ProjectDirectory projectDirectory = AssetDatabase.LoadAssetAtPath<ProjectDirectory>(projectDirectoryPath);
-        if (!projectDirectory)
+        [MenuItem("Tools/Setup/Create Project Setup", priority = 0)]
+        public static void CreateProjectSetup()
         {
-            Debug.LogError($"The Project Directory Asset wasn't found at {projectDirectoryPath}. Make sure it exists.");
-            return;
-        }
-        Debug.Log("The Project Directory was found. Checking if it is valid...");
-        if (!projectDirectory.IsValidProjectDirectory()) return;
-        CreateProjectDirectoryStructure(projectDirectory);
+            Debug.Log("Set Editor Settings");
 
-        AssetDatabase.Refresh();
-        Debug.Log("Finished setup.");
-    }
+            Debug.Log("Create Directories");
+            if (!PDSCreator.Create()) return;
 
-    private static void CreateProjectDirectoryStructure(ProjectDirectory projectDirectory)
-    {
-        string rootName = projectDirectory.Root.Name;
-
-        for (int i = 0; i < projectDirectory.Directories.Length; i++)
-        {
-            CreateDirectoryStructure(projectDirectory.Directories[i], rootName);
-        }
-    }
-
-    private static void CreateDirectoryStructure(Directory directory, string rootPath)
-    {
-        string directoryPath = Path.Combine(rootPath, directory.Name);
-
-        if (!LoadMonobehaviourScriptTemplate(out monoBehaviourScriptTemplate)) return;
-
-        if (System.IO.Directory.Exists(directoryPath))
-        {
-            Debug.LogWarning($"The directory {directoryPath} already exists. No subdirectories of this directory will be created.");
-            return;
+            Debug.Log("Finished setup.");
         }
 
-        System.IO.Directory.CreateDirectory(directoryPath);
-
-        if (directory.FileNames != null)
+        [MenuItem("Tools/Setup/Create Project Directory", priority = 1)]
+        public static void CreateProjectDirectory()
         {
-            for (int i = 0; i < directory.FileNames.Length; i++)
+            ProjectDirectory asset = ScriptableObject.CreateInstance<ProjectDirectory>();
+            string root = "Assets";
+            string directory = "Project Directories";
+            string defaultAssetName = "NewProjectDirectory.asset";
+
+            string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Setup", directory, defaultAssetName));
+
+            CreateAsset action = ScriptableObject.CreateInstance<CreateAsset>();
+            action.Init(typeof(ProjectDirectory));
+
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
+            0,
+            action,
+            path,
+            EditorGUIUtility.IconContent("ScriptableObject Icon").image as Texture2D,
+            null
+            );
+        }
+
+        [MenuItem("Tools/Setup/Create File Template", priority = 2)]
+        public static void CreateFileTemplate()
+        {
+            //ScriptTemplate asset = ScriptableObject.CreateInstance<ScriptTemplate>();
+            string root = "Assets";
+            string directory = "Script Templates";
+            string defaultAssetName = "NewScriptTemplate.asset";
+
+            string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Setup", directory, defaultAssetName));
+
+            CreateAsset action = ScriptableObject.CreateInstance<CreateAsset>();
+            action.Init(typeof(FileTemplate));
+
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
+            0,
+            action,
+            path,
+            EditorGUIUtility.IconContent("ScriptableObject Icon").image as Texture2D,
+            null
+            );
+        }
+
+        class CreateAsset : EndNameEditAction
+        {
+            private Type type;
+
+            public void Init(Type type)
             {
-                string fileName = directory.FileNames[i];
-                string filePath = Path.Combine(directoryPath, fileName);
-                if (File.Exists(filePath)) continue;
+                if (type == null || !typeof(ScriptableObject).IsAssignableFrom(type))
+                {
+                    Debug.LogError("Invalid type passed to CreateAsset.");
+                    return;
+                }
 
-                if (fileName.EndsWith(".cs"))
-                {
-                    string fileNameWithoutExtension = fileName.Replace(".cs", ""); // Error prone
-                    if (fileNameWithoutExtension.Equals(string.Empty))
-                    {
-                        fileNameWithoutExtension = "Default";
-                    }
-                    string specificTemplate = string.Format(monoBehaviourScriptTemplate, fileNameWithoutExtension);
-                    File.WriteAllText(filePath, specificTemplate);
-                }
-                else
-                {
-                    File.WriteAllText(filePath, string.Empty);
-                }
+                this.type = type;
+            }
+
+            public override void Action(int instanceId, string pathName, string resourceFile)
+            {
+                ScriptableObject asset = CreateInstance(type);
+                AssetDatabase.CreateAsset(asset, pathName);
+                AssetDatabase.SaveAssets();
+                EditorUtility.FocusProjectWindow();
+                Selection.activeObject = asset;
             }
         }
-
-        for (int i = 0; i < directory.Subdirectories.Length; i++)
-        {
-            Directory subdirectory = directory.Subdirectories[i];
-            string newRootName = Path.Combine(rootPath, directory.Name);
-            CreateDirectoryStructure(subdirectory, newRootName);
-        }
-    }
-
-    private static bool LoadMonobehaviourScriptTemplate(out string template)
-    {
-        template = string.Empty;
-        string path = Path.Combine("Assets", "Tools", "Setup", "MonoBehaviourScriptTemplate.txt");
-        if (!File.Exists(path))
-        {
-            Debug.LogError($"The Template for MonoBehaviour Scripts doesn't exist. Please make sure that {path} exists./");
-            return false;
-        }
-        template = File.ReadAllText(path);
-        return true;
-
     }
 }
+
