@@ -20,7 +20,7 @@ namespace Tools
             Debug.Log("Finished setup.");
         }
 
-        [MenuItem("Tools/Setup/Create Project Directory", priority = 1)]
+        [MenuItem("Tools/Setup/Create Project Directory", priority = 50)]
         public static void CreateProjectDirectory()
         {
             ProjectDirectory asset = ScriptableObject.CreateInstance<ProjectDirectory>();
@@ -42,18 +42,18 @@ namespace Tools
             );
         }
 
-        [MenuItem("Tools/Setup/Create File Template", priority = 2)]
-        public static void CreateFileTemplate()
+        [MenuItem("Tools/Setup/Create File Template Rule", priority = 51)]
+        public static void CreateFileTemplateRule()
         {
             //ScriptTemplate asset = ScriptableObject.CreateInstance<ScriptTemplate>();
             string root = "Assets";
-            string directory = "Script Templates";
-            string defaultAssetName = "NewScriptTemplate.asset";
+            string directory = "File Template Rules";
+            string defaultAssetName = "NewScriptTemplateRule.asset";
 
-            string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Setup", directory, defaultAssetName));
+            string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Setup", "Project Directories", directory, defaultAssetName));
 
             CreateAsset action = ScriptableObject.CreateInstance<CreateAsset>();
-            action.Init(typeof(FileTemplate));
+            action.Init(typeof(FileTemplateRule));
 
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
             0,
