@@ -64,6 +64,28 @@ namespace Tools
             );
         }
 
+        [MenuItem("Tools/Setup/Create Project Settings", priority = 52)]
+        public static void CreateProjectSettings()
+        {
+            //ScriptTemplate asset = ScriptableObject.CreateInstance<ScriptTemplate>();
+            string root = "Assets";
+            string directory = "Project Settings";
+            string defaultAssetName = "NewScriptTemplateRule.asset";
+
+            string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Setup", directory, defaultAssetName));
+
+            CreateAsset action = ScriptableObject.CreateInstance<CreateAsset>();
+            action.Init(typeof(ProjectSettingsSO));
+
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
+            0,
+            action,
+            path,
+            EditorGUIUtility.IconContent("ScriptableObject Icon").image as Texture2D,
+            null
+            );
+        }
+
         class CreateAsset : EndNameEditAction
         {
             private Type type;
