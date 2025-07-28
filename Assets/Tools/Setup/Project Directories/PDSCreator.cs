@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,22 +9,48 @@ namespace Tools
 {
     public static class PDSCreator
     {
-        private static string pdPath = Path.Combine("Assets", "Tools", "Setup", "ProjectDirectory.asset");
-        private static string monoBehaviourScriptTemplate = string.Empty;
+        private static string pdDir = Path.Combine("Assets", "Tools", "Setup", "Project Directories");
+        private static string pdAssetPath = Path.Combine(pdDir, "ProjectDirectory.asset");
+        private static string ftrDir = Path.Combine(pdDir, "File Template Rules");
+        private static FileTemplateRule[] fileTemplateRules;
 
         public static bool Create()
         {
-            ProjectDirectory projectDirectory = AssetDatabase.LoadAssetAtPath<ProjectDirectory>(pdPath);
+            ProjectDirectory projectDirectory = AssetDatabase.LoadAssetAtPath<ProjectDirectory>(pdAssetPath);
             if (!projectDirectory)
             {
-                Debug.LogError($"The Project Directory Asset wasn't found at {pdPath}. Make sure it exists.");
+                Debug.LogError($"The Project Directory Asset wasn't found at {pdAssetPath}. Make sure it exists.");
                 return false;
             }
             Debug.Log("The Project Directory was found. Checking if it is valid...");
             if (!projectDirectory.IsValidProjectDirectory()) return false;
+            fileTemplateRules = FindAll<FileTemplateRule>();
             CreateProjectDirectoryStructure(projectDirectory);
             AssetDatabase.Refresh();
             return true;
+        }
+
+        public static T[] FindAll<T>() where T : ScriptableObject
+        {
+            List<T> foundAssets = new List<T>();
+
+            string[] guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+
+            foreach (string guid in guids)
+            {
+                // Convert GUID to asset path
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+
+                // Load the asset as T
+                T asset = AssetDatabase.LoadAssetAtPath<T>(path);
+
+                if (asset != null)
+                {
+                    foundAssets.Add(asset);
+                }
+            }
+
+            return foundAssets.ToArray();
         }
 
         private static void CreateProjectDirectoryStructure(ProjectDirectory projectDirectory)
@@ -37,8 +66,6 @@ namespace Tools
         private static void CreateDirectoryStructure(Directory directory, string rootPath)
         {
             string directoryPath = Path.Combine(rootPath, directory.Name);
-
-            if (!LoadMonobehaviourScriptTemplate(out monoBehaviourScriptTemplate)) return;
 
             if (System.IO.Directory.Exists(directoryPath))
             {
@@ -58,13 +85,27 @@ namespace Tools
 
                     if (fileName.EndsWith(".cs"))
                     {
-                        string fileNameWithoutExtension = fileName.Replace(".cs", ""); // Error prone
+                        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
                         if (fileNameWithoutExtension.Equals(string.Empty))
                         {
-                            fileNameWithoutExtension = "Default";
+                            Debug.LogWarning("No file name. Was not created");
+                            continue;
                         }
-                        string specificTemplate = string.Format(monoBehaviourScriptTemplate, fileNameWithoutExtension);
-                        File.WriteAllText(filePath, specificTemplate);
+
+                        if (FindMatchingFileTemplateRule(fileName, out string code))
+                        {
+                            try
+                            {
+                                code = string.Format(code, fileNameWithoutExtension);
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogError(e);
+                            }
+                            
+                        }
+
+                        File.WriteAllText(filePath, code);
                     }
                     else
                     {
@@ -81,17 +122,24 @@ namespace Tools
             }
         }
 
-        private static bool LoadMonobehaviourScriptTemplate(out string template)
+        private static bool FindMatchingFileTemplateRule(string fileName, out string template)
         {
             template = string.Empty;
-            string path = Path.Combine("Assets", "Tools", "Setup", "MonoBehaviourScriptTemplate.txt");
-            if (!File.Exists(path))
+            bool found = false;
+            uint currentPriority = uint.MaxValue;
+
+            for (int i = 0; i < fileTemplateRules.Length; i++)
             {
-                Debug.LogError($"The Template for MonoBehaviour Scripts doesn't exist. Please make sure that {path} exists./");
-                return false;
+                FileTemplateRule ftr = fileTemplateRules[i];
+
+                if (Regex.IsMatch(fileName, ftr.RegexRule) && currentPriority > ftr.Priority)
+                {
+                    template = ftr.Template;
+                    found = true;
+                }
             }
-            template = File.ReadAllText(path);
-            return true;
+
+            return found;
         }
     }
 }
