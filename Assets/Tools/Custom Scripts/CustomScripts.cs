@@ -161,7 +161,7 @@ namespace Tools
         public override void Action(int instanceId, string pathName, string resourceFile)
         {
             string className = Path.GetFileNameWithoutExtension(pathName);
-            string code = scriptTemplate.Template.Replace("{className}", className);
+            string code = scriptTemplate.Template.Replace("ClassName", className);
 
             File.WriteAllText(pathName, code);
             AssetDatabase.Refresh();
