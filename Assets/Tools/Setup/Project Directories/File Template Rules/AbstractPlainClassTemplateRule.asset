@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f67085c1824c60468a3b76b79f9e2b8, type: 3}
   m_Name: AbstractPlainClassTemplateRule
   m_EditorClassIdentifier: 
-  RegexRule: .*.cs
-  Priority: 11
-  Template: plain class
+  RegexRule: Abstract.*.cs
+  Priority: 12
+  Template: abstract plain class
