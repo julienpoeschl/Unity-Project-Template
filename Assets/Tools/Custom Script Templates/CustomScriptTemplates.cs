@@ -7,17 +7,16 @@ using System;
 namespace Tools
 {
 
-    public static class CustomScripts
+    public static class CustomScriptTemplates
     {
         [MenuItem("Tools/Custom Scripts/Create Script Template", priority = 50)]
         public static void CreateScriptTemplate()
         {
-            //ScriptTemplate asset = ScriptableObject.CreateInstance<ScriptTemplate>();
             string root = "Assets";
             string directory = "Script Templates";
             string defaultAssetName = "NewScriptTemplate.asset";
 
-            string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Custom Scripts", directory, defaultAssetName));
+            string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Custom Script Templates", directory, defaultAssetName));
 
             CreateAsset action = ScriptableObject.CreateInstance<CreateAsset>();
             action.Init(typeof(ScriptTemplate));
@@ -31,7 +30,7 @@ namespace Tools
             );
         }
 
-        private static string templatePath = Path.Combine("Assets", "Tools", "Custom Scripts", "Script Templates");
+        private static string templatePath = Path.Combine("Assets", "Tools", "Custom Script Templates", "Script Templates");
 
         private static void CreateScript(string templatePath)
         {

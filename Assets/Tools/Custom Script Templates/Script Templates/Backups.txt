@@ -46,6 +46,7 @@ using UnityEngine;
 /// <summary>
 /// 
 /// </summary>
+[CreateAssetMenu(fileName = "ClassName", menuName = "ClassName/ClassName", order = 0)]
 public class ClassName : ScriptableObject
 {
 
