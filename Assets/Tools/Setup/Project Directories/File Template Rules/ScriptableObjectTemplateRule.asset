@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RegexRule: .*SO.cs
   Priority: 4
-  Template: scriptable object
+  Template: // scriptable object

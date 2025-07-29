@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RegexRule: .*.cs
   Priority: 11
-  Template: plain class
+  Template: // plain class

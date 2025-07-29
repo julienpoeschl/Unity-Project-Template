@@ -25,6 +25,7 @@ namespace Tools
             Debug.Log("The Project Directory was found. Checking if it is valid...");
             if (!projectDirectory.IsValidProjectDirectory()) return false;
             fileTemplateRules = FindAll<FileTemplateRule>();
+            Debug.Log(fileTemplateRules);
             CreateProjectDirectoryStructure(projectDirectory);
             AssetDatabase.Refresh();
             return true;
@@ -135,6 +136,7 @@ namespace Tools
                 if (Regex.IsMatch(fileName, ftr.RegexRule) && currentPriority > ftr.Priority)
                 {
                     template = ftr.Template;
+                    currentPriority = ftr.Priority;
                     found = true;
                 }
             }
