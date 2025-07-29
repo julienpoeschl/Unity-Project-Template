@@ -1,0 +1,23 @@
+
+Singleplayer Package List
+
+com.unity.visualeffectgraph
+com.unity.ide.visualstudio
+com.unity.ai.navigation
+com.unity.inputsystem
+com.unity.localization
+com.unity.terrain-tools
+com.unity.timeline
+com.unity.render-pipelines.universal
+
+Multiplayer Package List
+
+com.unity.netcode.gameobjects
+com.unity.visualeffectgraph
+com.unity.ide.visualstudio
+com.unity.ai.navigation
+com.unity.inputsystem
+com.unity.localization
+com.unity.terrain-tools
+com.unity.timeline
+com.unity.render-pipelines.universal
