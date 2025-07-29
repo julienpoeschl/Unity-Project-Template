@@ -12,10 +12,17 @@ namespace Tools
         [MenuItem("Tools/Setup/Create Project Setup", priority = 0)]
         public static void CreateProjectSetup()
         {
-            Debug.Log("Set Editor Settings");
+            Debug.Log("Set Editor Settings..");
+            if (!CustomProjectSettings.Initialize()) return;
+            Debug.Log("Finished initializing settings.");
 
-            Debug.Log("Create Directories");
+            Debug.Log("Create Directories...");
             if (!PDSCreator.Create()) return;
+            Debug.Log("Finished creating project structure.");
+
+            Debug.Log("Installing packages..");
+            if (!PackageInstaller.Install()) return;
+            Debug.Log("Finished installing packages.");
 
             Debug.Log("Finished setup.");
         }
@@ -23,7 +30,6 @@ namespace Tools
         [MenuItem("Tools/Setup/Create Project Directory", priority = 50)]
         public static void CreateProjectDirectory()
         {
-            ProjectDirectory asset = ScriptableObject.CreateInstance<ProjectDirectory>();
             string root = "Assets";
             string directory = "Project Directories";
             string defaultAssetName = "NewProjectDirectory.asset";
@@ -45,7 +51,6 @@ namespace Tools
         [MenuItem("Tools/Setup/Create File Template Rule", priority = 51)]
         public static void CreateFileTemplateRule()
         {
-            //ScriptTemplate asset = ScriptableObject.CreateInstance<ScriptTemplate>();
             string root = "Assets";
             string directory = "File Template Rules";
             string defaultAssetName = "NewScriptTemplateRule.asset";
@@ -67,7 +72,6 @@ namespace Tools
         [MenuItem("Tools/Setup/Create Project Settings", priority = 52)]
         public static void CreateProjectSettings()
         {
-            //ScriptTemplate asset = ScriptableObject.CreateInstance<ScriptTemplate>();
             string root = "Assets";
             string directory = "Project Settings";
             string defaultAssetName = "ProjectSettings.asset";
@@ -89,7 +93,6 @@ namespace Tools
         [MenuItem("Tools/Setup/Create Package List", priority = 53)]
         public static void CreatePackageList()
         {
-            //ScriptTemplate asset = ScriptableObject.CreateInstance<ScriptTemplate>();
             string root = "Assets";
             string directory = "Package Lists";
             string defaultAssetName = "PackageList.asset";
