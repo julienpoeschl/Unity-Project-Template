@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccfc84be3ba896643ae8e75178d27cb2, type: 3}
   m_Name: PackageList
   m_EditorClassIdentifier: 
-  packages: []
+  packages:
+  - com.unity.render-pipelines.universal

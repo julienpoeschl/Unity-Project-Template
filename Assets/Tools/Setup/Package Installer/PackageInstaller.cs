@@ -12,21 +12,30 @@ public static class PackageInstaller
 
     private static string packageListDir = Path.Combine("Assets", "Tools", "Setup", "Package Installer", "Package Lists");
 
-    public static void Install()
+    public static bool Install()
     {
 
-        // Search for obj
-        // Find all entries
-        // Install all entries
         string packageListAssetName = "PackageList.asset";
 
-        PackageListSO packageList = AssetDatabase.LoadAssetAtPath<PackageListSO>(Path.Combine(packageListDir, packageListAssetName));
+        PackageListSO packageList = null;
+
+        try
+        {
+            packageList = AssetDatabase.LoadAssetAtPath<PackageListSO>(Path.Combine(packageListDir, packageListAssetName));
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("Couldn't find the package list.");
+            return false;
+        }
 
         for (int i = 0; i < packageList.packages.Length; i++)
         {
             string package = packageList.packages[i];
             InstallPackage(package);
         }
+
+        return true;
 
     }
 
