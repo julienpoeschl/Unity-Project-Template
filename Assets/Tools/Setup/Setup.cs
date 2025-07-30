@@ -9,9 +9,12 @@ namespace Tools
     public static class Setup
     {
 
-        [MenuItem("Tools/Setup/Create Project Setup", priority = 0)]
-        public static void CreateProjectSetup()
+        [MenuItem("Tools/Setup/Create Project", priority = 0)]
+        public static void CreateProject()
         {
+            SetupWindow.ShowWindow();
+
+            return;
             Debug.Log("Set Editor Settings..");
             if (!CustomProjectSettings.Initialize()) return;
             Debug.Log("Finished initializing settings.");
@@ -37,7 +40,7 @@ namespace Tools
             string path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(root, "Tools", "Setup", directory, defaultAssetName));
 
             CreateAsset action = ScriptableObject.CreateInstance<CreateAsset>();
-            action.Init(typeof(ProjectDirectory));
+            action.Init(typeof(ProjectDirectorySO));
 
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
             0,
@@ -135,6 +138,65 @@ namespace Tools
                 Selection.activeObject = asset;
             }
         }
+
+        /// <summary>
+        /// Pop-up window in editor to confirm project setup and select different templates.
+        /// </summary>
+        public class SetupWindow : EditorWindow
+        {
+            private string inputText = "Default Text";
+            private bool toggleValue = false;
+
+            private static readonly int WIDTH = 1200;
+            private static readonly int HEIGHT = 800;
+
+            private PackageListSO packageListSO;
+            private ProjectDirectorySO projectDirectorySO;
+            private ProjectSettingsSO projectSettingsSO;
+
+            public static void ShowWindow()
+            {
+                SetupWindow window = GetWindow<SetupWindow>(true, "Setup", true);
+                Rect main = EditorGUIUtility.GetMainWindowPosition();
+                float centerX = main.x + main.width / 2f;
+                float centerY = main.y + main.height / 2f;
+
+                window.position = new Rect(centerX - WIDTH / 2f, centerY - HEIGHT / 2f, WIDTH, HEIGHT);
+            }
+
+            private void OnGUI()
+            {
+                // Draw different boxes
+                // Per box find first SO if existing
+                // Allow to select other
+                // Cancel and confirm
+
+
+                GUILayout.Label("Project Creation Settings", EditorStyles.boldLabel);
+
+                packageListSO = (PackageListSO)EditorGUILayout.ObjectField("Package List", packageListSO, typeof(PackageListSO), false);
+
+                projectDirectorySO = (ProjectDirectorySO)EditorGUILayout.ObjectField("Project Directory", projectDirectorySO, typeof(ProjectDirectorySO), false);
+
+                projectSettingsSO = (ProjectSettingsSO)EditorGUILayout.ObjectField("Project Settings", projectSettingsSO, typeof(ProjectSettingsSO), false);
+
+                
+
+                GUILayout.Space(10);
+
+                if (GUILayout.Button("Confirm"))
+                {
+                    // Apply setup
+                    Close();
+                }
+
+                if (GUILayout.Button("Cancel"))
+                {
+                    Close();
+                }
+            }
+        }
+
     }
 }
 
