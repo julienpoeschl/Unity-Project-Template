@@ -16,17 +16,17 @@ namespace Tools
 
         public static bool Create()
         {
-            ProjectDirectory projectDirectory = AssetDatabase.LoadAssetAtPath<ProjectDirectory>(pdAssetPath);
-            if (!projectDirectory)
+            ProjectDirectorySO projectDirectorySO = AssetDatabase.LoadAssetAtPath<ProjectDirectorySO>(pdAssetPath);
+            if (!projectDirectorySO)
             {
                 Debug.LogError($"The Project Directory Asset wasn't found at {pdAssetPath}. Make sure it exists.");
                 return false;
             }
             Debug.Log("The Project Directory was found. Checking if it is valid...");
-            if (!projectDirectory.IsValidProjectDirectory()) return false;
+            if (!projectDirectorySO.IsValidProjectDirectory()) return false;
             fileTemplateRules = FindAll<FileTemplateRule>();
             Debug.Log(fileTemplateRules);
-            CreateProjectDirectoryStructure(projectDirectory);
+            CreateProjectDirectoryStructure(projectDirectorySO);
             AssetDatabase.Refresh();
             return true;
         }
@@ -54,13 +54,13 @@ namespace Tools
             return foundAssets.ToArray();
         }
 
-        private static void CreateProjectDirectoryStructure(ProjectDirectory projectDirectory)
+        private static void CreateProjectDirectoryStructure(ProjectDirectorySO projectDirectorySO)
         {
-            string rootName = projectDirectory.Root.Name;
+            string rootName = projectDirectorySO.Root.Name;
 
-            for (int i = 0; i < projectDirectory.Directories.Length; i++)
+            for (int i = 0; i < projectDirectorySO.Directories.Length; i++)
             {
-                CreateDirectoryStructure(projectDirectory.Directories[i], rootName);
+                CreateDirectoryStructure(projectDirectorySO.Directories[i], rootName);
             }
         }
 

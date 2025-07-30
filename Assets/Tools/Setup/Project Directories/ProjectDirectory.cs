@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Tools
 {
 
-    public class ProjectDirectory : ScriptableObject
+    public class ProjectDirectorySO : ScriptableObject
     {
         [Tooltip("The nested project directory structure.")]
         public Directory[] Directories;

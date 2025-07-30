@@ -5,17 +5,17 @@ using System.Collections.Generic;
 namespace Tools
 {
     
-    [CustomEditor(typeof(ProjectDirectory))]
+    [CustomEditor(typeof(ProjectDirectorySO))]
     public class ProjectDirectoryEditor : Editor
     {
-        private ProjectDirectory projectDirectory;
+        private ProjectDirectorySO projectDirectorySO;
         private Dictionary<Directory, bool> directoryFoldouts = new Dictionary<Directory, bool>();
         private Color baseColor;
 
 
         private void OnEnable()
         {
-            projectDirectory = (ProjectDirectory)target;
+            projectDirectorySO = (ProjectDirectorySO)target;
             baseColor = GUI.backgroundColor;
         }
 
@@ -30,28 +30,28 @@ namespace Tools
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Add Directory"))
             {
-                AddSubdirectory(ref projectDirectory.Directories);
+                AddSubdirectory(ref projectDirectorySO.Directories);
             }
 
             if (GUILayout.Button("Add File"))
             {
-                AddFile(ref projectDirectory.Directories);
+                AddFile(ref projectDirectorySO.Directories);
             }
 
             if (GUILayout.Button("Validate entire Project Directory"))
             {
-                projectDirectory.IsValidProjectDirectory();
+                projectDirectorySO.IsValidProjectDirectory();
             }
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
 
             // Render root subdirectories
-            if (projectDirectory.Directories == null) return;
+            if (projectDirectorySO.Directories == null) return;
 
-            for (int i = 0; i < projectDirectory.Directories.Length; i++)
+            for (int i = 0; i < projectDirectorySO.Directories.Length; i++)
             {
-                RenderDirectory(projectDirectory.Directories[i], ref projectDirectory.Directories, i, 0);
+                RenderDirectory(projectDirectorySO.Directories[i], ref projectDirectorySO.Directories, i, 0);
                 GUILayout.Space(10);
             }
 
@@ -166,7 +166,7 @@ namespace Tools
             dirs.CopyTo(newDirs, 0);
             newDirs[dirs.Length] = new Directory { Name = "NewDir", Subdirectories = new Directory[0], FileNames = new string[0] };
             dirs = newDirs;
-            EditorUtility.SetDirty(projectDirectory);
+            EditorUtility.SetDirty(projectDirectorySO);
         }
 
         private void AddFile(ref string[] files)
@@ -178,7 +178,7 @@ namespace Tools
             files.CopyTo(newFiles, 0);
             newFiles[files.Length] = "NewFile";
             files = newFiles;
-            EditorUtility.SetDirty(projectDirectory);
+            EditorUtility.SetDirty(projectDirectorySO);
         }
 
         private void AddFile(ref Directory[] dirs)
@@ -198,7 +198,7 @@ namespace Tools
                 newArray[j++] = array[i];
             }
             array = newArray;
-            EditorUtility.SetDirty(projectDirectory);
+            EditorUtility.SetDirty(projectDirectorySO);
         }
     }
 }
