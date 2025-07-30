@@ -4,9 +4,12 @@ namespace Tools
 {
     public class FileTemplateRule : ScriptableObject
     {
+        [Tooltip("")]
         public string RegexRule;
+        [Tooltip("")]
         public uint Priority;
-        [TextArea()]
+        [Tooltip("")]
+        [TextArea(40, 40)]
         public string Template;
     }    
 }

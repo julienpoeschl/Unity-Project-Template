@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RegexRule: Abstract.*.cs
   Priority: 12
-  Template: // abstract plain class
+  Template: "using UnityEngine;\r\n\r\n/// <summary>\r\n/// \r\n/// </summary>\r\npublic
+    abstract class ClassName : MonoBehaviour\r\n{\r\n\r\n    public ClassName()\r\n   
+    {\r\n\r\n    }\r\n}"

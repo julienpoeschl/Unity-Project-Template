@@ -1,0 +1,103 @@
+MonoBehaviour:
+
+using UnityEditor;
+using UnityEngine;
+
+/// <summary>
+/// 
+/// </summary>
+public class ClassName : MonoBehaviour
+{
+
+    void Awake()
+    {
+
+    }
+}
+
+Plain Class:
+
+using UnityEngine;
+
+/// <summary>
+/// 
+/// </summary>
+public class ClassName
+{
+
+    public ClassName()
+    {
+
+    }
+}
+
+Abstract Plain Class:
+
+using UnityEngine;
+
+/// <summary>
+/// 
+/// </summary>
+public abstract class ClassName : MonoBehaviour
+{
+
+    public ClassName()
+    {
+
+    }
+}
+
+Scriptable Object:
+
+using UnityEngine;
+
+/// <summary>
+/// 
+/// </summary>
+[CreateAssetMenu(fileName = "ClassName", menuName = "ClassName/ClassName", order = 0)]
+public class ClassName : ScriptableObject
+{
+
+
+}
+
+Abstract Scriptable Object:
+
+using UnityEngine;
+
+/// <summary>
+/// 
+/// </summary>
+public abstract class ClassName : ScriptableObject
+{
+
+
+}
+
+Manager:
+
+using UnityEngine;
+
+/// <summary>
+/// 
+/// </summary>
+public class ClassName : MonoBehaviour
+{
+    public static ClassName Instance;
+
+    void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogWarning($"Destroyed duplicate {this.name} Manager.");
+            Destroy(gameObject);
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+}
+
+TODO:
+
+TODO

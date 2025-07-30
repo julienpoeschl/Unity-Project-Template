@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RegexRule: .*.cs
   Priority: 11
-  Template: // plain class
+  Template: "using UnityEngine;\r\n\r\n/// <summary>\r\n/// \r\n/// </summary>\r\npublic
+    class ClassName\r\n{\r\n\r\n    public ClassName()\r\n    {\r\n\r\n    }\r\n}"
