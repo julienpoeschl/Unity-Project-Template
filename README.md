@@ -1,4 +1,4 @@
-🚧 Still in work
+🚧 Work in progress
 
 # Installation
 
