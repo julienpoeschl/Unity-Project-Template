@@ -29,9 +29,9 @@ public static class PackageInstaller
             return false;
         }
 
-        for (int i = 0; i < packageList.packages.Length; i++)
+        for (int i = 0; i < packageList.Packages.Length; i++)
         {
-            string package = packageList.packages[i];
+            string package = packageList.Packages[i].Name;
             InstallPackage(package);
         }
 
